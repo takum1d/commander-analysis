@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commander IF - Personality Profiling</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Noto+Sans+JP:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0f1115;
+            --card-bg: rgba(20, 24, 32, 0.75);
+            --primary-red: #ef4444;
+            --primary-orange: #f97316;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            background-image: 
+                radial-gradient(circle at 85% 15%, rgba(239, 68, 68, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 15% 85%, rgba(249, 115, 22, 0.05) 0%, transparent 40%);
+            background-attachment: fixed;
+            margin: 0;
+            padding: 2rem;
+        }
+
+        .glass-panel {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Custom Range Slider Styling to represent the scales */
+        .trait-row {
+            display: grid;
+            grid-template-columns: 80px 1fr 80px;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+        
+        .trait-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .trait-label.active {
+            color: var(--primary-red);
+        }
+
+        .track {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+            position: relative;
+            width: 100%;
+        }
+
+        .marker {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 16px;
+            height: 16px;
+            background: var(--primary-red);
+            border: 3px solid #1e293b;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+            z-index: 10;
+        }
+
+        .highlight-line {
+            position: absolute;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.8), transparent);
+            border-radius: 999px;
+            top: 0;
+        }
+
+        .glow-text {
+            text-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="max-w-5xl mx-auto space-y-8">
+        
+        <!-- HEADER / IDENTITY -->
+        <header class="glass-panel p-8 relative overflow-hidden border-t-4 border-t-red-500">
+            <div class="absolute -right-10 -top-10 opacity-10">
+                <i class="fa-solid fa-chess-king" style="font-size: 15rem;"></i>
+            </div>
+            
+            <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                <div>
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-bold tracking-widest uppercase">
+                            Top 5% Rarity
+                        </span>
+                        <span class="px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300 text-xs font-bold tracking-widest">
+                            ID: COMMANDER - IF
+                        </span>
+                    </div>
+                    <h1 class="text-4xl md:text-6xl font-black text-white tracking-tighter mb-2 glow-text">
+                        コマンダー <span class="text-red-500">IF</span>
+                    </h1>
+                    <p class="text-lg md:text-xl font-bold text-slate-300">
+                        卓越した統率力で勝利を掴む指揮者
+                    </p>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-slate-400 mb-1">コアコンピテンシー</p>
+                    <div class="flex gap-2 justify-end">
+                        <span class="bg-red-500/20 text-red-400 px-3 py-1 rounded-lg text-sm font-bold border border-red-500/20">データドリブン</span>
+                        <span class="bg-orange-500/20 text-orange-400 px-3 py-1 rounded-lg text-sm font-bold border border-orange-500/20">成果主義</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- COGNITIVE TRAITS (The Sliders) -->
+            <section class="glass-panel p-8">
+                <h2 class="text-xl font-bold text-white mb-8 flex items-center gap-2 border-b border-slate-800 pb-4">
+                    <i class="fa-solid fa-sliders text-red-500"></i> 行動特性パラメーター
+                </h2>
+                
+                <div class="space-y-6">
+                    <!-- Trait 1 -->
+                    <div class="trait-row">
+                        <span class="trait-label">感情</span>
+                        <div class="track">
+                            <div class="highlight-line" style="left: 50%; right: 5%; background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.4));"></div>
+                            <div class="marker" style="left: 90%;"></div>
+                        </div>
+                        <span class="trait-label active">論理</span>
+                    </div>
+                    
+                    <!-- Trait 2 -->
+                    <div class="trait-row">
+                        <span class="trait-label">アジャイル</span>
+                        <div class="track">
+                            <div class="highlight-line" style="left: 50%; right: 20%; background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.4));"></div>
+                            <div class="marker" style="left: 70%;"></div>
+                        </div>
+                        <span class="trait-label active">熟考</span>
+                    </div>
+
+                    <!-- Trait 3 -->
+                    <div class="trait-row">
+                        <span class="trait-label">調和</span>
+                        <div class="track">
+                            <div class="highlight-line" style="left: 50%; right: 5%; background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.4));"></div>
+                            <div class="marker" style="left: 95%;"></div>
+                        </div>
+                        <span class="trait-label active">成果志向</span>
+                    </div>
+
+                    <!-- Trait 4 -->
+                    <div class="trait-row">
+                        <span class="trait-label">フォロワー</span>
+                        <div class="track">
+                            <div class="highlight-line" style="left: 50%; right: 10%; background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.4));"></div>
+                            <div class="marker" style="left: 85%;"></div>
+                        </div>
+                        <span class="trait-label active">リーダー</span>
+                    </div>
+
+                    <!-- Trait 5 -->
+                    <div class="trait-row">
+                        <span class="trait-label">社交</span>
+                        <div class="track">
+                            <div class="highlight-line" style="left: 50%; right: 15%; background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.4));"></div>
+                            <div class="marker" style="left: 80%;"></div>
+                        </div>
+                        <span class="trait-label active">孤独 (独立)</span>
+                    </div>
+
+                    <!-- Trait 6 -->
+                    <div class="trait-row">
+                        <span class="trait-label">対症療法</span>
+                        <div class="track">
+                            <div class="highlight-line" style="left: 50%; right: 5%; background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.4));"></div>
+                            <div class="marker" style="left: 95%;"></div>
+                        </div>
+                        <span class="trait-label active">根本解決</span>
+                    </div>
+                </div>
+                
+                <div class="mt-8 p-4 bg-slate-900/50 rounded-xl border border-slate-800 text-xs text-slate-400 leading-relaxed">
+                    <strong class="text-red-400">分析:</strong> 「論理」「成果志向」「根本解決」の数値が極めて高く振り切れています。これは、表面的な人間関係の構築よりも、合理的かつ最短距離で目標を達成するシステム構築に最も適性があることを示しています。
+                </div>
+            </section>
+
+            <!-- STRENGTHS & WEAKNESSES -->
+            <div class="space-y-8">
+                <!-- Strengths -->
+                <section class="glass-panel p-8 border-l-4 border-l-emerald-500">
+                    <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-trend-up text-emerald-500"></i> 長所・強み (Strengths)
+                    </h2>
+                    <ul class="space-y-4">
+                        <li class="flex gap-3">
+                            <i class="fa-solid fa-check text-emerald-500 mt-1"></i>
+                            <div>
+                                <span class="text-sm font-bold text-slate-200 block">データに基づく客観的判断</span>
+                                <span class="text-xs text-slate-400">感情に流されず、事実と数字のみをベースに最適解を導き出します。</span>
+                            </div>
+                        </li>
+                        <li class="flex gap-3">
+                            <i class="fa-solid fa-check text-emerald-500 mt-1"></i>
+                            <div>
+                                <span class="text-sm font-bold text-slate-200 block">逆境への圧倒的耐性</span>
+                                <span class="text-xs text-slate-400">困難な課題であるほど解決意欲が湧き、本質的な原因（根本解決）を追求します。</span>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+
+                <!-- Environment Fit -->
+                <section class="glass-panel p-8 border-l-4 border-l-orange-500">
+                    <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-triangle-exclamation text-orange-500"></i> 環境適性とストレス要因
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="p-3 bg-red-950/20 border border-red-900/30 rounded-lg">
+                            <span class="text-xs font-bold text-red-400 block mb-1">
+                                <i class="fa-solid fa-bolt mr-1"></i> 致命的なストレス要因
+                            </span>
+                            <p class="text-xs text-slate-300">
+                                非合理的な意思決定、感情論での評価、他人の成果を横取りするような不透明なシステム。これらはコマンダーIFにとって「耐え難いバグ」であり、モチベーションを完全に奪います。
+                            </p>
+                        </div>
+                        <div class="p-3 bg-emerald-950/20 border border-emerald-900/30 rounded-lg">
+                            <span class="text-xs font-bold text-emerald-400 block mb-1">
+                                <i class="fa-solid fa-seedling mr-1"></i> パフォーマンスを発揮する環境
+                            </span>
+                            <p class="text-xs text-slate-300">
+                                完全に実力・成果主義で評価される環境。業務プロセスに裁量権があり、データに基づいて組織や業務を改善（根本解決）できるポジション。
+                            </p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- ACTIONABLE INSIGHT -->
+        <section class="glass-panel p-8 bg-gradient-to-r from-slate-900 to-red-950/20">
+            <h3 class="text-base font-bold text-white mb-3"><i class="fa-solid fa-lightbulb text-yellow-400 mr-2"></i> 総括とキャリアへの適用</h3>
+            <p class="text-sm text-slate-300 leading-relaxed mb-4">
+                診断結果における「成果志向」と「論理」の突出具合は、現在の職場で正当な評価プロセスがないことに強い不満を抱くのが<strong>極めて健全な反応</strong>であることを証明しています。<br>
+                このパーソナリティは、ルールが整備されていないカオスな現場作業よりも、システムの改善、海外とのやり取り、データ管理など、<strong>「属人的な感情が介入しない、プロフェッショナルな領域（外資系事務、IT、貿易事務など）」</strong>でこそトップ層の成果を出します。
+            </p>
+        </section>
+
+    </div>
+
+</body>
+</html>
